@@ -4,30 +4,51 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float Hp;
+    public float Health => _health;
+    public bool IsDead => _isDead;
 
-    private bool isDead = false;
+    [SerializeField]
+    private float _health;
+    [Space, SerializeField]
+    private PlayerAttackController _attackController;
+
+    private bool _isDead;
     public Animator AnimatorController;
 
-    private void Update()
+    public void PerformAttack(PlayerAttackController.AttackType attackType)
     {
-        if (isDead)
-        {
-            return;
-        }
+        _attackController.PerformAttack(attackType);
+    }
 
-        if (Hp <= 0)
+    public void TakeDamage(float amount)
+    {
+        if (_isDead)
+            return;
+
+        _health -= amount;
+        Debug.Log($"Player takes {amount} damage. Current health is {_health}.");
+
+        if (Health <= 0)
         {
+            _health = 0;
             Die();
             return;
         }
     }
 
+    public void RestoreHealth(float amount)
+    {
+        if (_isDead)
+            return;
+
+        _health += amount;
+        Debug.Log($"Player restores {amount} health. Current health is {_health}.");
+    }
+
     private void Die()
     {
-        isDead = true;
+        _isDead = true;
         AnimatorController.SetTrigger("Die");
-
         SceneManager.Instance.GameOver();
     }
 }

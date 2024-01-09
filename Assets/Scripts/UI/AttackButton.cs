@@ -41,7 +41,7 @@ public class AttackButton : MonoBehaviour
 
     private void Press()
     {
-        PlayerAttackService.Get(_attackType).PerformAttack();
+        SceneManager.Instance.Player.PerformAttack(_attackType);
     }
 
     private void OnEnabled()

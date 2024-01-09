@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,12 +6,13 @@ using UnityEngine.AI;
 
 public class Enemie : MonoBehaviour
 {
+    public enum EnemyType { Goblin, StrongGoblin }
+
     public float Hp;
     public float Damage;
     public float AtackSpeed;
     public float AttackRange = 2;
-
-
+    
     public Animator AnimatorController;
     public NavMeshAgent Agent;
 
@@ -47,25 +49,23 @@ public class Enemie : MonoBehaviour
             if (Time.time - lastAttackTime > AtackSpeed)
             {
                 lastAttackTime = Time.time;
-                SceneManager.Instance.Player.Hp -= Damage;
+                SceneManager.Instance.Player.TakeDamage(Damage);
                 AnimatorController.SetTrigger("Attack");
             }
         }
         else
         {
+            Agent.isStopped = false;
             Agent.SetDestination(SceneManager.Instance.Player.transform.position);
         }
         AnimatorController.SetFloat("Speed", Agent.speed);
-        //Debug.Log(Agent.speed);
     }
-
-
-
-    private void Die()
+    
+    protected virtual void Die()
     {
         SceneManager.Instance.RemoveEnemie(this);
+        SceneManager.Instance.Player.RestoreHealth(2);
         isDead = true;
         AnimatorController.SetTrigger("Die");
     }
-
 }

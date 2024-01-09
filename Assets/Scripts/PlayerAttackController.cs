@@ -25,6 +25,9 @@ public class PlayerAttackController : MonoBehaviour
 
     private void Update()
     {
+        if (_player.IsDead)
+            return;
+
         foreach (var item in _attacks)
         {
             item.Value.Update();
@@ -33,6 +36,9 @@ public class PlayerAttackController : MonoBehaviour
 
     public void PerformAttack(AttackType type)
     {
+        if (_player.IsDead)
+            return;
+
         _attacks[type].PerformAttack();
     }
 }

@@ -8,5 +8,5 @@ using UnityEngine;
 public class Wave : ScriptableObject
 {
 
-    public GameObject[] Characters;
+    public Enemie.EnemyType[] Enemies;
 }

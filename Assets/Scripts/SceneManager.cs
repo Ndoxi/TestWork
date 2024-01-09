@@ -10,8 +10,6 @@ public class SceneManager : MonoBehaviour
     public static SceneManager Instance;
 
     [SerializeField]
-    private Player _playerPrefab;
-    [SerializeField]
     private Vector3 _playersSpawnPos;
 
     public Player Player { get; private set; }
@@ -26,9 +24,7 @@ public class SceneManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        Player player = Instantiate(_playerPrefab);
-        player.transform.position = _playersSpawnPos;
-        Player = player;
+        Player = Factory.SpawnPlayer(_playersSpawnPos);
     }
 
     private void Start()
@@ -64,10 +60,10 @@ public class SceneManager : MonoBehaviour
         }
 
         var wave = Config.Waves[currWave];
-        foreach (var character in wave.Characters)
+        foreach (var enemyType in wave.Enemies)
         {
             Vector3 pos = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
-            Instantiate(character, pos, Quaternion.identity);
+            Factory.SpawnEnemy(enemyType, pos);
         }
         currWave++;
         UpdateWaveInfo?.Invoke(Config.Waves.Length, currWave);

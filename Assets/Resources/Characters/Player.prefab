@@ -111,7 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d0d768a0d357334286e5a146ac21b9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Hp: 10
+  _health: 10
+  _attackController: {fileID: 3389028332094828271}
   AnimatorController: {fileID: 2111518244622979505}
 --- !u!114 &1005350852314817352
 MonoBehaviour:

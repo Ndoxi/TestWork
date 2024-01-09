@@ -25,6 +25,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (_player.IsDead)
+            return;
+
         float speed = 0;
         if (MovementProcessor.Current.MoveInput != Vector2.zero)
         {
