@@ -55,9 +55,8 @@ public class Enemie : MonoBehaviour
         {
             Agent.SetDestination(SceneManager.Instance.Player.transform.position);
         }
-        AnimatorController.SetFloat("Speed", Agent.speed); 
-        Debug.Log(Agent.speed);
-
+        AnimatorController.SetFloat("Speed", Agent.speed);
+        //Debug.Log(Agent.speed);
     }
 
 
