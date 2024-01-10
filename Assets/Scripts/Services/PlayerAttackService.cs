@@ -1,26 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public static class PlayerAttackService
+public class PlayerAttackService
 {
-    private static readonly string RESOURCE_KEY = "AttacksData";
-    private static AttacksData _attacksData;
-    private static Dictionary<PlayerAttackController.AttackType, Attack> _attacks;
+    private readonly AttacksData _attacksData;
+    private readonly SceneManager _sceneManager;
+    private readonly Dictionary<PlayerAttackController.AttackType, Attack> _attacks;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    private static void Initialize()
+    public PlayerAttackService(AttacksData attacksData, SceneManager sceneManager)
     {
-        _attacksData = Resources.Load<AttacksData>(RESOURCE_KEY);
         _attacks = new Dictionary<PlayerAttackController.AttackType, Attack>();
+        _sceneManager = sceneManager;
+        _attacksData = attacksData;
     }
 
-    public static Attack Get(PlayerAttackController.AttackType type)
+    public Attack Get(PlayerAttackController.AttackType type)
     {
         return _attacks[type];
     }
 
-    public static Attack Create(PlayerAttackController.AttackType type, Player player)
+    public Attack Create(PlayerAttackController.AttackType type, Player player)
     {
         if (_attacks.TryGetValue(type, out Attack attack))
             return attack;
@@ -28,17 +29,17 @@ public static class PlayerAttackService
             return CreateInternal(type, player);
     }
 
-    private static Attack CreateInternal(PlayerAttackController.AttackType type, Player player)
+    private Attack CreateInternal(PlayerAttackController.AttackType type, Player player)
     {
         Attack attack = null;
 
         switch (type)
         {
             case PlayerAttackController.AttackType.Basic:
-                attack = new Attack(_attacksData.GetAttackData(PlayerAttackController.AttackType.Basic), player);
+                attack = new Attack(_attacksData.GetAttackData(PlayerAttackController.AttackType.Basic), player, _sceneManager);
                 break;
             case PlayerAttackController.AttackType.Super:
-                attack = new SuperAttack(_attacksData.GetAttackData(PlayerAttackController.AttackType.Super), player);
+                attack = new SuperAttack(_attacksData.GetAttackData(PlayerAttackController.AttackType.Super), player, _sceneManager);
                 break;
         }
 

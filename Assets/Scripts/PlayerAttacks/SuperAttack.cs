@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class SuperAttack : Attack
 {
-    public SuperAttack(AttackData attackData, Player player) : base(attackData, player) {}
+    public SuperAttack(AttackData attackData, Player player, SceneManager sceneManager) 
+        : base(attackData, player, sceneManager) { }
 
     public override void Update()
     {
-        var inRange = SceneManager.Instance.GetInCircle(_attackData.AttackRange, _player.transform.position);
+        var inRange = _sceneManager.GetInCircle(_attackData.AttackRange, _player.transform.position);
         if (inRange.Count > 0)
             SetEnable();
         else

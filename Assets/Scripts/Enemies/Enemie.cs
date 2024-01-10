@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Zenject;
 
 public class Enemie : MonoBehaviour
 {
@@ -16,15 +17,20 @@ public class Enemie : MonoBehaviour
     public Animator AnimatorController;
     public NavMeshAgent Agent;
 
+    private SceneManager _sceneManager;
     private float lastAttackTime = 0;
     private bool isDead = false;
 
+    [Inject]
+    private void Construct(SceneManager sceneManager)
+    {
+        _sceneManager = sceneManager;
+    }
 
     private void Start()
     {
-        SceneManager.Instance.AddEnemie(this);
-        Agent.SetDestination(SceneManager.Instance.Player.transform.position);
-
+        _sceneManager.AddEnemie(this);
+        Agent.SetDestination(_sceneManager.Player.transform.position);
     }
 
     private void Update()
@@ -41,7 +47,7 @@ public class Enemie : MonoBehaviour
             return;
         }
 
-        var distance = Vector3.Distance(transform.position, SceneManager.Instance.Player.transform.position);
+        var distance = Vector3.Distance(transform.position, _sceneManager.Player.transform.position);
      
         if (distance <= AttackRange)
         {
@@ -49,22 +55,22 @@ public class Enemie : MonoBehaviour
             if (Time.time - lastAttackTime > AtackSpeed)
             {
                 lastAttackTime = Time.time;
-                SceneManager.Instance.Player.TakeDamage(Damage);
+                _sceneManager.Player.TakeDamage(Damage);
                 AnimatorController.SetTrigger("Attack");
             }
         }
         else
         {
             Agent.isStopped = false;
-            Agent.SetDestination(SceneManager.Instance.Player.transform.position);
+            Agent.SetDestination(_sceneManager.Player.transform.position);
         }
         AnimatorController.SetFloat("Speed", Agent.speed);
     }
     
     protected virtual void Die()
     {
-        SceneManager.Instance.RemoveEnemie(this);
-        SceneManager.Instance.Player.RestoreHealth(2);
+        _sceneManager.RemoveEnemie(this);
+        _sceneManager.Player.RestoreHealth(2);
         isDead = true;
         AnimatorController.SetTrigger("Die");
     }

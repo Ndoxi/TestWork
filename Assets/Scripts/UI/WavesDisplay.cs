@@ -2,20 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 public class WavesDisplay : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI _textMesh;
 
+    private SceneManager _sceneManager;
+
+    [Inject]
+    private void Construct(SceneManager sceneManager)
+    {
+        _sceneManager = sceneManager;
+    }
+
     private void OnEnable()
     {
-        SceneManager.Instance.UpdateWaveInfo += UpdateWavesDisplay;
+        _sceneManager.UpdateWaveInfo += UpdateWavesDisplay;
     }
 
     private void OnDisable()
     {
-        SceneManager.Instance.UpdateWaveInfo -= UpdateWavesDisplay;
+        _sceneManager.UpdateWaveInfo -= UpdateWavesDisplay;
     }
 
     private void UpdateWavesDisplay(int total, int current)

@@ -3,31 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneManager : MonoBehaviour
+public class SceneManager
 {
+    public event System.Action<bool> OnGameEnd;
+    public event System.Action OnPlayerAdded;
     public event System.Action<int, int> UpdateWaveInfo;
 
-    public static SceneManager Instance;
-
-    [SerializeField]
-    private Vector3 _playersSpawnPos;
-
     public Player Player { get; private set; }
-    [Space]
-    public List<Enemie> Enemies;
-    public GameObject Lose;
-    public GameObject Win;
+    public readonly List<Enemie> Enemies;
 
     private int currWave = 0;
-    [SerializeField] private LevelConfig Config;
+    private readonly LevelConfig _config;
+    private readonly EnemyFactory _enemyFactory;
 
-    private void Awake()
+    public SceneManager(LevelConfig levelConfig, EnemyFactory enemyFactory)
     {
-        Instance = this;
-        Player = Factory.SpawnPlayer(_playersSpawnPos);
+        _config = levelConfig;
+        _enemyFactory = enemyFactory;
+        Enemies = new List<Enemie>();
     }
 
-    private void Start()
+    public void SetPlayer(Player player)
+    {
+        Player = player;
+        OnPlayerAdded?.Invoke();
+    }
+
+    public void StartGame()
     {
         SpawnWave();
     }
@@ -48,25 +50,25 @@ public class SceneManager : MonoBehaviour
 
     public void GameOver()
     {
-        Lose.SetActive(true);
+        OnGameEnd?.Invoke(false);
     }
 
     private void SpawnWave()
     {
-        if (currWave >= Config.Waves.Length)
+        if (currWave >= _config.Waves.Length)
         {
-            Win.SetActive(true);
+            OnGameEnd?.Invoke(true);
             return;
         }
 
-        var wave = Config.Waves[currWave];
+        var wave = _config.Waves[currWave];
         foreach (var enemyType in wave.Enemies)
         {
             Vector3 pos = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
-            Factory.SpawnEnemy(enemyType, pos);
+            _enemyFactory.Create(enemyType, pos);
         }
         currWave++;
-        UpdateWaveInfo?.Invoke(Config.Waves.Length, currWave);
+        UpdateWaveInfo?.Invoke(_config.Waves.Length, currWave);
     }
 
     public void Reset()

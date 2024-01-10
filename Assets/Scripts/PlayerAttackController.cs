@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(Player))]
 public class PlayerAttackController : MonoBehaviour
@@ -10,6 +11,13 @@ public class PlayerAttackController : MonoBehaviour
 
     private Dictionary<AttackType, Attack> _attacks;
     private Player _player;
+    private PlayerAttackService _attackService;
+
+    [Inject]
+    private void Construct(PlayerAttackService attackService)
+    {
+        _attackService = attackService;
+    }
 
     private void Awake()
     {
@@ -18,8 +26,8 @@ public class PlayerAttackController : MonoBehaviour
 
         _attacks = new Dictionary<AttackType, Attack>
         {
-            { AttackType.Basic, PlayerAttackService.Create(AttackType.Basic, _player) },
-            { AttackType.Super, PlayerAttackService.Create(AttackType.Super, _player) }
+            { AttackType.Basic, _attackService.Create(AttackType.Basic, _player) },
+            { AttackType.Super, _attackService.Create(AttackType.Super, _player) }
         };
     }
 

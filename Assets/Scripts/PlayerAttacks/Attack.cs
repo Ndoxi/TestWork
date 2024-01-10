@@ -12,13 +12,15 @@ public class Attack
 
     protected readonly Player _player;
     protected readonly AttackData _attackData;
+    protected readonly SceneManager _sceneManager;
     protected bool _enabled = true;
     private float _lastAttackTime = -1000f;
 
-    public Attack(AttackData attackData, Player player)
+    public Attack(AttackData attackData, Player player, SceneManager sceneManager)
     {
         _player = player;
         _attackData = attackData;
+        _sceneManager = sceneManager;
     }
 
     public virtual void PerformAttack()
@@ -35,7 +37,7 @@ public class Attack
             return;
         }
 
-        Enemie closestEnemie = SceneManager.Instance.GetClosestEnemy(_player.transform.position);
+        Enemie closestEnemie = _sceneManager.GetClosestEnemy(_player.transform.position);
         if (closestEnemie == null)
         {
             Log("An enemy not found!");

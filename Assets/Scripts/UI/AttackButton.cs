@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 [RequireComponent(typeof(Button))]
 public class AttackButton : MonoBehaviour
@@ -13,6 +14,15 @@ public class AttackButton : MonoBehaviour
 
     private Button _button;
     private bool _coolingdown;
+    private SceneManager _sceneManager;
+    private PlayerAttackService _attackService;
+
+    [Inject]
+    private void Construct(SceneManager sceneManager, PlayerAttackService attackService)
+    {
+        _sceneManager = sceneManager;
+        _attackService = attackService;
+    }
 
     private void Awake()
     {
@@ -25,7 +35,7 @@ public class AttackButton : MonoBehaviour
 
     private void OnEnable()
     {
-        Attack attack = PlayerAttackService.Get(_attackType);
+        Attack attack = _attackService.Get(_attackType);
         attack.OnEnable += OnEnabled;
         attack.OnDisable += OnDisabled;
         attack.OnPerformed += OnPerformed;
@@ -33,7 +43,7 @@ public class AttackButton : MonoBehaviour
 
     private void OnDisable()
     {
-        Attack attack = PlayerAttackService.Get(_attackType);
+        Attack attack = _attackService.Get(_attackType);
         attack.OnEnable -= OnEnabled;
         attack.OnDisable -= OnDisabled;
         attack.OnPerformed -= OnPerformed;
@@ -41,7 +51,7 @@ public class AttackButton : MonoBehaviour
 
     private void Press()
     {
-        SceneManager.Instance.Player.PerformAttack(_attackType);
+        _sceneManager.Player.PerformAttack(_attackType);
     }
 
     private void OnEnabled()

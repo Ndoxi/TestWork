@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e081e4022503c674cada908a0468da80, type: 3}
+  m_Name: GameSettingsInstaller
+  m_EditorClassIdentifier: 
+  LevelConfig: {fileID: 11400000, guid: 8153ea4e5491d8543b373d0f03962714, type: 2}
+  AttacksData: {fileID: 11400000, guid: c02feb198fe774348be96201db6a4009, type: 2}

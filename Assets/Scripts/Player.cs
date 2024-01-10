@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class Player : MonoBehaviour
 {
@@ -13,7 +14,20 @@ public class Player : MonoBehaviour
     private PlayerAttackController _attackController;
 
     private bool _isDead;
+    private SceneManager _sceneManager;
     public Animator AnimatorController;
+
+    [Inject]
+    private void Construct(SceneManager sceneManager)
+    {
+        _sceneManager = sceneManager;
+    }
+
+    private void Start()
+    {
+        _sceneManager.SetPlayer(this);
+        _sceneManager.StartGame();
+    }
 
     public void PerformAttack(PlayerAttackController.AttackType attackType)
     {
@@ -49,6 +63,6 @@ public class Player : MonoBehaviour
     {
         _isDead = true;
         AnimatorController.SetTrigger("Die");
-        SceneManager.Instance.GameOver();
+        _sceneManager.GameOver();
     }
 }
